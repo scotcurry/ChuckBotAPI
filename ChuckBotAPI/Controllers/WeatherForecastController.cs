@@ -21,6 +21,7 @@ namespace ChuckBotAPI.Controllers
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
+            _logger.LogInformation("Starting Logger");
         }
 
         [HttpGet]
