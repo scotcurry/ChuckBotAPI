@@ -13,12 +13,17 @@ namespace ChuckBotAPI.Classes
         string telegramBaseURL = "https://api.telegram.org";
         string telegramUpdateEndpoint = "sendMessage";
 
-        readonly ILogger logger;
+        readonly ILogger logger ;
 
         // TODO:  Need to research new logger functionality.
         public UpdateResultHandler()
         {
-            logger.LogWarning("Starting UpdateResultHandler", null);
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+            });
+            logger = loggerFactory.CreateLogger("UpdateResultHandler");
+            logger.LogError("Starting UpdateResultHandler");
         }
 
         public enum JokeType
