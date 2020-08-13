@@ -52,6 +52,7 @@ namespace ChuckBotAPI.Controllers
             BotUpdateRequest allRequests = new BotUpdateRequest();
             Result result = new Result();
             UpdateResultHandler updateResultHandler = new UpdateResultHandler();
+            var returnString = "Hello from Chuckbot";
             if (jsonContent.Contains("result"))
             {
                 JsonConvert.PopulateObject(jsonContent, allRequests);
@@ -63,11 +64,17 @@ namespace ChuckBotAPI.Controllers
             }
             else
             {
-                JsonConvert.PopulateObject(jsonContent, result);
-                updateResultHandler.ProcessUpdateRequest(result.message);
+                try { 
+                    JsonConvert.PopulateObject(jsonContent, result);
+                    updateResultHandler.ProcessUpdateRequest(result.message);
+                } catch (JsonException ex)
+                {
+                    returnString = ex.Message;
+                    logger.LogError(ex.Message);
+                }
             }
 
-            return Ok("Hello From Chuckbot");
+            return Ok(returnString);
         }
 
         private BotUpdateRequest getUpdateObject(Stream streamBody)
