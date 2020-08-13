@@ -33,7 +33,7 @@ namespace ChuckBotAPI.Controllers
         public IActionResult Index()
         {
             // return View();
-            logger.LogError("Starting Error Logging", null);
+            logger.LogInformation("Starting Error Logging", null);
             Guid guid = Guid.NewGuid();
             var guidString = Convert.ToString(guid);
 
@@ -43,10 +43,11 @@ namespace ChuckBotAPI.Controllers
         [HttpPost]
         public IActionResult PostJSON() 
         {
-            logger.LogWarning("Starting PostJSON Logging", null);
+            logger.LogInformation("Starting PostJSON Logging", null);
             var requestBody = HttpContext.Request.Body;
             var requestLength = HttpContext.Request.ContentLength;
             string jsonContent = getJSONContent(requestBody);
+            logger.LogDebug(jsonContent);
 
             BotUpdateRequest allRequests = new BotUpdateRequest();
             Result result = new Result();
