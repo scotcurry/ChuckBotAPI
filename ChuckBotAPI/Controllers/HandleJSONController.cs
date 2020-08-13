@@ -47,7 +47,8 @@ namespace ChuckBotAPI.Controllers
             var requestBody = HttpContext.Request.Body;
             var requestLength = HttpContext.Request.ContentLength;
             string jsonContent = getJSONContent(requestBody);
-            logger.LogInformation(jsonContent);
+            logger.LogInformation("JSON Content: " + jsonContent);
+            logger.LogInformation("Body Length: " + requestLength.ToString());
 
             BotUpdateRequest allRequests = new BotUpdateRequest();
             Result result = new Result();
