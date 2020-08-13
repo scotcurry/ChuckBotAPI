@@ -45,8 +45,13 @@ namespace ChuckBotAPI.Controllers
         {
             logger.LogInformation("Starting PostJSON Logging", null);
             var requestBody = HttpContext.Request.Body;
+            using (var reader = new StreamReader(requestBody))
+            {
+
+            }
             var requestLength = HttpContext.Request.ContentLength;
-            string jsonContent = getJSONContent(requestBody);
+            Task<string> jsonContentAsync = getJSONContent(requestBody);
+            var jsonContent = jsonContentAsync.Result;
             logger.LogInformation("JSON Content: " + jsonContent);
             logger.LogInformation("Body Length: " + requestLength.ToString());
 
@@ -112,17 +117,18 @@ namespace ChuckBotAPI.Controllers
             return result;
         }
 
-        string getJSONContent(Stream streamBody)
+        async Task<string> getJSONContent(Stream streamBody)
         {
             string returnString = String.Empty;
             var bodyStream = new StreamReader(streamBody);
             try
             {
-                returnString = bodyStream.ReadToEnd();
+                returnString = await bodyStream.ReadToEndAsync();
             }
             catch (Exception ex)
             {
                 string exception = ex.Message;
+                logger.LogInformation("Exception Reading Body: " + ex.Message);
             }
             finally
             {
