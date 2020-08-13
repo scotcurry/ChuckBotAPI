@@ -13,7 +13,7 @@ namespace ChuckBotAPI.Classes
         string telegramBaseURL = "https://api.telegram.org";
         string telegramUpdateEndpoint = "sendMessage";
 
-        readonly ILogger logger ;
+        readonly ILogger logger;
 
         // TODO:  Need to research new logger functionality.
         public UpdateResultHandler()
@@ -22,7 +22,7 @@ namespace ChuckBotAPI.Classes
             {
                 builder.AddConsole();
             });
-            logger = loggerFactory.CreateLogger("UpdateResultHandler");
+            logger = loggerFactory.CreateLogger("ChuckBotAPI.Classes.UpdateResultHandler");
             logger.LogError("Starting UpdateResultHandler");
         }
 
@@ -37,10 +37,11 @@ namespace ChuckBotAPI.Classes
         {
             int chatID = message.chat.id;
             string messageText = message.text;
-            logger.LogWarning("Message Text: {0}", messageText);
+            logger.LogWarning("ChuckBotAPI.Classes.ProcessUpdateRequest - Message Text: {0}", messageText);
             Task<string> jsonToSend = processUpdateRequest(messageText, chatID);
 
             string returnedString = jsonToSend.Result;
+            logger.LogWarning("ChuckBotAPI.Classes.ProcessUpdateRequest - JSON Result: {0}", returnedString);
         }
 
         async Task<string> processUpdateRequest(string messageText, int chatID)
@@ -104,10 +105,10 @@ namespace ChuckBotAPI.Classes
 
             string returnString = "Success";
             HttpResponseMessage responseMessage = null;
+            HttpClient client = new HttpClient();
             try
             {
-
-                // responseMessage = await client.SendAsync(postRequest);
+                responseMessage = await client.SendAsync(postRequest);
             }
             catch (Exception ex)
             {

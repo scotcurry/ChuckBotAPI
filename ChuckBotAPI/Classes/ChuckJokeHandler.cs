@@ -1,5 +1,6 @@
 ﻿using RestSharp;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace ChuckBotAPI.Classes
 {
@@ -7,7 +8,7 @@ namespace ChuckBotAPI.Classes
     {
       
         static string chuckJokeURL = "https://api.icndb.com";
-
+        ILogger logger;
 
         public enum JokeType
         {
@@ -18,6 +19,12 @@ namespace ChuckBotAPI.Classes
 
         public string GetChuckJoke()
         {
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+            });
+            logger = loggerFactory.CreateLogger("ChuckBotAPI.Classes.ChuckJokeHandler");
+            logger.LogError("Starting UpdateResultHandler");
             // log.Info("Processing Generic Chuck Joke");
             return getJokeWithOptions(null, JokeType.Any);
         }
@@ -34,7 +41,7 @@ namespace ChuckBotAPI.Classes
                 getJokeWithOptions(replacementText, JokeType.Any);
 
             string messageText = "Processing Chuck Joke with Replacement Text: " + replacementText;
-            // log.Info(messageText);
+            logger.LogInformation(messageText);
             return getJokeWithOptions(replacementText, JokeType.Any);
         }
 
@@ -56,21 +63,20 @@ namespace ChuckBotAPI.Classes
             if ((int)jokeType == (int)JokeType.Explicit)
                 initialJokeEndpoint += "jokes/random?limitTo=[explicit]";
 
-            // log.Info("Joke Endpoint: " + initialJokeEndpoint);
+            logger.LogInformation("Joke Endpoint: " + initialJokeEndpoint);
             RestRequest request = new RestRequest(initialJokeEndpoint, Method.GET);
             IRestResponse response = restClient.Execute(request);
 
             string jokeText = string.Empty;
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                // log.Info("Status Code OK From Call to ChuckDB");
+                logger.LogInformation("Return from ChuckDB = 200 OK");
                 ChuckJokeInfo jokeInfo = new ChuckJokeInfo();
                 JsonConvert.PopulateObject(response.Content, jokeInfo);
                 jokeText = jokeInfo.value.joke;
             }
             else
             {
-                
                 jokeText = "Something went wrong. Chuck is going to kick someone's ass";
             }
 

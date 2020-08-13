@@ -29,6 +29,8 @@ namespace ChuckBotAPI.Controllers
         }
 
         // GET: /<controller>/
+        // This is all just debug code to make sure the app is running and logging is working.
+        // POSTMAN Command GET:  https://localhost:5001/handlejson/
         [HttpGet]
         public IActionResult Index()
         {
@@ -61,6 +63,7 @@ namespace ChuckBotAPI.Controllers
             var returnString = "Hello from Chuckbot";
             if (jsonContent.Contains("result"))
             {
+                logger.LogInformation("JSON Contains RESULT!  Total Results: " + allRequests.result.Count.ToString());
                 JsonConvert.PopulateObject(jsonContent, allRequests);
                 foreach (Result currentResult in allRequests.result)
                 {
@@ -70,13 +73,14 @@ namespace ChuckBotAPI.Controllers
             }
             else
             {
-                try { 
+                try {
+                    logger.LogInformation("Simple Update Request - Attempting to Serialize JSON");
                     JsonConvert.PopulateObject(jsonContent, result);
                     updateResultHandler.ProcessUpdateRequest(result.message);
                 } catch (JsonException ex)
                 {
                     returnString = ex.Message;
-                    logger.LogError(ex.Message);
+                    logger.LogError("Error Serializing SimpleJSON: " + ex.Message);
                 }
             }
 
