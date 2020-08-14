@@ -145,7 +145,7 @@ namespace ChuckBotAPI.Controllers
             }
 
             // Debug Code: Gets a sample from a file.  Commented out if things are working
-            returnString = getJSONFromFile();
+            // returnString = getJSONFromFile();
             return returnString;
         }
 
