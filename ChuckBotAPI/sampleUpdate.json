@@ -1,0 +1,28 @@
+﻿{
+  "update_id": 114331885,
+  "message": {
+    "message_id": 2471,
+    "from": {
+      "id": 217787086,
+      "is_bot": false,
+      "first_name": "Scot",
+      "last_name": "Curry",
+      "language_code": "en"
+    },
+    "chat": {
+      "id": 217787086,
+      "first_name": "Scot",
+      "last_name": "Curry",
+      "type": "private"
+    },
+    "date": 1597359015,
+    "text": "/replace Scot",
+    "entities": [
+      {
+        "offset": 0,
+        "length": 8,
+        "type": "bot_command"
+      }
+    ]
+  }
+}

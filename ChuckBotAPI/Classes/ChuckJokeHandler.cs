@@ -19,11 +19,7 @@ namespace ChuckBotAPI.Classes
 
         public string GetChuckJoke()
         {
-            var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddConsole();
-            });
-            logger = loggerFactory.CreateLogger("ChuckBotAPI.Classes.ChuckJokeHandler");
+            buildLogger();
             logger.LogError("Starting UpdateResultHandler");
             // log.Info("Processing Generic Chuck Joke");
             return getJokeWithOptions(null, JokeType.Any);
@@ -31,6 +27,7 @@ namespace ChuckBotAPI.Classes
 
         public string GetChuckJoke(string replacementText)
         {
+            buildLogger();
             replacementText = replacementText.Trim();
             if (replacementText.ToLower() == "victor" || replacementText.ToLower() == "victor gonzalez" || replacementText.ToLower() == "neha")
                 getJokeWithOptions(replacementText, JokeType.Nerdy);
@@ -99,6 +96,18 @@ namespace ChuckBotAPI.Classes
             string jokeText = jokeWithQuote.Replace("&quot;", quoteCharString);
 
             return jokeText;
+        }
+
+        private void buildLogger()
+        {
+            if (logger == null)
+            {
+                var loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    builder.AddConsole();
+                });
+                logger = loggerFactory.CreateLogger("ChuckBotAPI.Classes.ChuckJokeHandler");
+            }
         }
     }
 }

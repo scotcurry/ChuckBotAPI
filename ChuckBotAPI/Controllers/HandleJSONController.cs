@@ -19,13 +19,15 @@ namespace ChuckBotAPI.Controllers
     public class HandleJSONController : ControllerBase
     {
         readonly ILogger logger;
+        readonly private IWebHostEnvironment environment;
 
         // This is a newer concept in .NET Core.  There is this concept of Providers.  There are file providers, logging providers, etc.
         // Most of the documentation shows these being set in the Controllers initializer.
 
-        public HandleJSONController(ILogger<HandleJSONController> _logger)
+        public HandleJSONController(ILogger<HandleJSONController> _logger, IWebHostEnvironment _environment)
         {
             logger = _logger;
+            environment = _environment;
         }
 
         // GET: /<controller>/
@@ -42,15 +44,15 @@ namespace ChuckBotAPI.Controllers
             return Ok("Index Return Value: " + guidString);
         }
 
+        // This is the endpoint that Telegram expects to send the request to.  This is set with the following POST
+        // https://api.telegram.org/bot273811417:AAE_nPFxQ1REjc1Lx20UDVAn-bZfbKsgtIQ/setWebHook with JSON body looking like
+        // {"url": "https://cwchuckbotapi.azurewebsites.net/handlejson"}
         [HttpPost]
         public IActionResult PostJSON() 
         {
             logger.LogInformation("Starting PostJSON Logging", null);
             var requestBody = HttpContext.Request.Body;
-            using (var reader = new StreamReader(requestBody))
-            {
-
-            }
+           
             var requestLength = HttpContext.Request.ContentLength;
             Task<string> jsonContentAsync = getJSONContent(requestBody);
             var jsonContent = jsonContentAsync.Result;
@@ -101,7 +103,7 @@ namespace ChuckBotAPI.Controllers
                 jsonString = bodyStream.ReadToEnd();
                 logger.LogWarning("JSON String: {0}", jsonString);
                 // Debug: Should be converted to a test
-                // jsonString = getJSONFromFile();
+                jsonString = getJSONFromFile();
                 JsonConvert.PopulateObject(jsonString, result);
             }
             catch (Exception ex)
@@ -142,6 +144,8 @@ namespace ChuckBotAPI.Controllers
                 }
             }
 
+            // Debug Code: Gets a sample from a file.  Commented out if things are working
+            returnString = getJSONFromFile();
             return returnString;
         }
 
@@ -149,10 +153,11 @@ namespace ChuckBotAPI.Controllers
         string getJSONFromFile()
         {
             string jsonToReturn = "No file to return";
-            /*
-            IFileProvider fileProvider = new PhysicalFileProvider(rootPath);
+
+            string rootPath = environment.ContentRootPath;
+            var fileProvider = new PhysicalFileProvider(rootPath);
             IDirectoryContents files = fileProvider.GetDirectoryContents("wwwroot");
-            IFileInfo fileInfo = fileProvider.GetFileInfo("wwwroot/sampleUpdate.json");
+            IFileInfo fileInfo = fileProvider.GetFileInfo("sampleUpdate.json");
 
             if (fileInfo.Exists)
             {
@@ -171,7 +176,7 @@ namespace ChuckBotAPI.Controllers
                     reader.Close();
                 }
             }
-            */
+           
             return jsonToReturn;
         }
     }

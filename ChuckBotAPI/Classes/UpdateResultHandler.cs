@@ -39,7 +39,6 @@ namespace ChuckBotAPI.Classes
             string messageText = message.text;
             logger.LogWarning("ChuckBotAPI.Classes.ProcessUpdateRequest - Message Text: {0}", messageText);
             Task<string> jsonToSend = processUpdateRequest(messageText, chatID);
-
             string returnedString = jsonToSend.Result;
             logger.LogWarning("ChuckBotAPI.Classes.ProcessUpdateRequest - JSON Result: {0}", returnedString);
         }
